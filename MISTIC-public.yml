@@ -12,7 +12,7 @@ dependencies:
   - cairo=1.16.0=h18b612c_1001
   - certifi=2019.11.28=py37hc8dfbb8_1
   - click=7.1.1=pyh8c360ce_0
-  - coloredlogs=14.0=py37_0
+  - coloredlogs=14.0=py37hc8dfbb8_1
   - curl=7.68.0=hf8cf82a_0
   - cycler=0.10.0=py_2
   - cython=0.29.13=py37he1b5a44_0
@@ -33,14 +33,14 @@ dependencies:
   - harfbuzz=2.4.0=h37c48d4_1
   - hdf5=1.10.5=nompi_h3c11f04_1104
   - htslib=1.9=h4da6232_3
-  - humanfriendly=8.1=py37_0
+  - humanfriendly=8.1=py37hc8dfbb8_1
   - icu=58.2=hf484d3e_1000
   - jasper=1.900.1=h07fcdf6_1006
   - jpeg=9c=h14c3975_1001
   - kiwisolver=1.1.0=py37h99015e2_1
   - krb5=1.16.4=h2fd8d38_0
   - lame=3.100=h14c3975_1001
-  - ld_impl_linux-64=2.33.1=h53a641e_8
+  - ld_impl_linux-64=2.34=h53a641e_0
   - libblas=3.8.0=11_openblas
   - libcblas=3.8.0=11_openblas
   - libcurl=7.68.0=hda55be3_0
@@ -57,9 +57,10 @@ dependencies:
   - libpng=1.6.37=hed695b0_0
   - libssh2=1.8.2=h22169c7_2
   - libstdcxx-ng=9.2.0=hdf63c60_2
-  - libtiff=4.1.0=hc3755c2_3
+  - libtiff=4.1.0=hc7e4089_5
   - libuuid=2.32.1=h14c3975_1000
   - libwebp=1.0.2=h56121f0_5
+  - libwebp-base=1.1.0=2
   - libxcb=1.13=h14c3975_1002
   - libxml2=2.9.9=h13577e0_2
   - lz4-c=1.8.3=he1b5a44_1001
@@ -115,4 +116,3 @@ dependencies:
   - zlib=1.2.11=h516909a_1006
   - zstd=1.4.4=h3b9ef0a_1
 prefix: /home/weber/.conda/envs/MISTIC-public
-

@@ -78,6 +78,9 @@ target/
 # exclude data from source control by default
 /data/
 
+# Except examples
+!/data/examples
+
 # Mac OS-specific storage files
 .DS_Store
 
@@ -87,3 +90,6 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+# egg-info
+.src.egg-info/
