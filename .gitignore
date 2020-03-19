@@ -87,3 +87,8 @@ target/
 
 # egg-info
 .src.egg-info/
+
+# Data
+data/
+!data/examples/
+!data/features/
