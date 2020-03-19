@@ -79,7 +79,7 @@ target/
 /data/
 
 # Except examples
-!/data/examples
+!/data/examples/*
 
 # Mac OS-specific storage files
 .DS_Store
