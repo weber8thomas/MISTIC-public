@@ -89,6 +89,5 @@ target/
 .src.egg-info/
 
 # Data
-data/
-!data/examples/
-!data/features/
+data/processed/
+data/raw/
