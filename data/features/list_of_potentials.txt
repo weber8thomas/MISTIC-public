@@ -1,0 +1,52 @@
+List of 47 Amino Acid Matrices in AAindex ver.9.2
+
+The columns correspond to the AAindex accession number and the description of
+each contact potential matrix.
+
+TANS760101 Statistical contact potential derived from 25 x-ray protein structures
+TANS760102 Number of contacts between side chains derived from 25 x-ray protein structures
+ROBB790102 Interaction energies derived from side chain contacts in the interiors of known protein structures
+BRYS930101 Distance-dependent statistical potential (only energies of contacts within 0-5 Angstrooms are included)
+THOP960101 Mixed quasichemical and optimization-based protein contact potential
+MIRL960101 Statistical potential derived by the maximization of the harmonic mean of Z scores
+VENM980101 Statistical potential derived by the maximization of the perceptron criterion
+BASU010101 Optimization-based potential derived by the modified perceptron criterion
+MIYS850102 Quasichemical energy of transfer of amino acids from water to the protein environment
+MIYS850103 Quasichemical energy of interactions in an average buried environment
+MIYS960101 Quasichemical energy of transfer of amino acids from water to the protein environment
+MIYS960102 Quasichemical energy of interactions in an average buried environment
+MIYS960103 Number of contacts between side chains derived from 1168 x-ray protein structures
+MIYS990106 Quasichemical energy of transfer of amino acids from water to the protein environment
+MIYS990107 Quasichemical energy of interactions in an average buried environment
+LIWA970101 Modified version of the Miyazawa-Jernigan transfer energy
+KESO980101 Quasichemical transfer energy derived from interfacial regions of protein-protein complexes
+KESO980102 Quasichemical energy in an average protein environment derived from interfacial regions of protein-protein complexes
+MOOG990101 Quasichemical potential derived from interfacial regions of protein-protein complexes
+BETM990101 Modified version of the Miyazawa-Jernigan transfer energy
+TOBD000101 Optimization-derived potential obtained for small set of decoys
+TOBD000102 Optimization-derived potential obtained for large set of decoys
+PARB960101 Statistical contact potential derived by the quasichemical approximation
+PARB960102 Modified version of the Miyazawa-Jernigan transfer energy
+KOLA930101 Statistical potential derived by the quasichemical approximation
+GODA950101 Quasichemical statistical potential derived from  buried contacts
+SKOJ970101 Statistical potential derived by the quasichemical approximation
+SKOJ000101 Statistical quasichemical potential with the partially composition-corrected pair scale
+SKOJ000102 Statistical quasichemical potential with the composition-corrected pair scale
+BONM030101 Quasichemical statistical potential for the antiparallel orientation of interacting side groups
+BONM030102 Quasichemical statistical potential for the intermediate orientation of interacting side groups
+BONM030103 Quasichemical statistical potential for the parallel orientation of interacting side groups
+BONM030104 Distances between centers of interacting side chains in the antiparallel orientation
+BONM030105 Distances between centers of interacting side chains in the intermediate orientation
+BONM030106 Distances between centers of interacting side chains in the parallel orientation
+MICC010101 Optimization-derived potential
+SIMK990101 Distance-dependent statistical potential (contacts within 0-5 Angstrooms)
+SIMK990102 Distance-dependent statistical potential (contacts within 5-7.5 Angstrooms)
+SIMK990103 Distance-dependent statistical potential (contacts within 7.5-10 Angstrooms)
+SIMK990104 Distance-dependent statistical potential (contacts within 10-12 Angstrooms)
+SIMK990105 Distance-dependent statistical potential (contacts longer than 12 Angstrooms)
+ZHAC000101 Environment-dependent residue contact energies (rows = helix, cols = helix)
+ZHAC000102 Environment-dependent residue contact energies (rows = helix, cols = strand)
+ZHAC000103 Environment-dependent residue contact energies (rows = helix, cols = coil)
+ZHAC000104 Environment-dependent residue contact energies (rows = strand, cols = strand)
+ZHAC000105 Environment-dependent residue contact energies (rows = strand, cols = coil)
+ZHAC000106 Environment-dependent residue contact energies (rows = coil, cols = coil)
