@@ -89,13 +89,15 @@ target/
 .src.egg-info/
 
 # Data
-data/processed/
-data/raw/
+*.csv.gz
+*.vcf.gz
+*.tsv.gz
+!data/examples/pandas_mini_eval.csv.gz
+!data/examples/pandas_mini_training.csv.gz
 
 # Logging
 Logging/
 
 # Outputs
-outputs/
-Supprimerait outputs/EVALUATION_SETS_OUTPUT_EXAMPLE/
-Supprimerait outputs/OUTPUT_EXAMPLE/
+outputs/EVALUATION_SETS_OUTPUT_EXAMPLE/
+outputs/OUTPUT_EXAMPLE/

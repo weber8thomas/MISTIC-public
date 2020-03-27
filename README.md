@@ -102,17 +102,16 @@ To perform
     │   ├── processed      <- Final VCF data after filtering.
     │   └── raw            <- Raw files.
     │
-    ├── outputs            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │
     ├── MISTIC-public.yml  <- The requirements file for reproducing the analysis environment
-    ├── MISTIC.py          <- The requirements file for reproducing the analysis environment
+    
+    ├── MISTIC.py          <- The main program of this project
     │
     ├── src                <- Source code for use in this project.
         ├── data           <- Scripts to download or generate data
         │   └── make_dataset.py
         │   └── vcf_to_pandas.py
         |
-        │── evaluation     <- Scripts to download or generate data
+        │── evaluation     <- Scripts to build evaluation sets
         │   └── combination_pandas.py
         │
         ├── features       <- Scripts to turn raw data into features for modeling
@@ -153,4 +152,4 @@ Feel free to post issues if you have troubles
 
 
 --------------------
-#<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
