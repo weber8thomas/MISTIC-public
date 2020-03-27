@@ -91,3 +91,11 @@ target/
 # Data
 data/processed/
 data/raw/
+
+# Logging
+Logging/
+
+# Outputs
+outputs/
+Supprimerait outputs/EVALUATION_SETS_OUTPUT_EXAMPLE/
+Supprimerait outputs/OUTPUT_EXAMPLE/

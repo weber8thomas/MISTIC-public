@@ -6,7 +6,6 @@ from sklearn import metrics
 from src.utils import utils
 from src.models import ML
 
-
 matplotlib.use('Agg', warn=False)
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure

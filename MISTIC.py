@@ -1,12 +1,12 @@
+import pathlib
+
 from src.models.testing import TestingClassification
 from src.models.training import TrainingClassification
 from src.utils import utils
-from src.models import ML
-from src.features import select_columns_pandas, AAIndex
+from src.features import select_columns_pandas
 from src.evaluation import combination_pandas
 from src.visualization import histo_weights, maf_plot
 
-from tqdm import tqdm
 from datetime import datetime
 from sklearn.externals import joblib
 import argparse
@@ -44,11 +44,14 @@ def test_eval_mp(file):
 		maf_test = fname[1]
 		file_name = "_".join(fname[2:])
 		logger.disabled = True
-		if os.path.exists('EVALUATION_SETS_' + arg_dict['output_dir'] + '/RESULTS_' + file_name + '_' + maf_test + '_' + cv) is False:
-			TestingClassification(input_data='EVALUATION_SETS_' + arg_dict['output_dir'] + '/' + file,
+		output_dir = arg_dict['output_dir']
+		output_dir = output_dir.split('/')
+		output_dir[-1] = 'EVALUATION_SETS_' + output_dir[-1]
+		output_dir = "/".join(output_dir)
+		if os.path.exists(output_dir + '/RESULTS_' + file_name + '_' + maf_test + '_' + cv) is False:
+			TestingClassification(input_data=output_dir + '/' + file,
 			                      standardize=arg_dict['standardize'],
-			                      output_dir='EVALUATION_SETS_' + arg_dict[
-				                      'output_dir'] + '/RESULTS_' + file_name + '_' + maf_test + '_' + cv,
+			                      output_dir=output_dir + '/RESULTS_' + file_name + '_' + maf_test + '_' + cv,
 			                      model_dir=arg_dict['model'],
 			                      logger=logger,
 			                      threshold=arg_dict['threshold']
@@ -61,6 +64,18 @@ def test_eval_mp(file):
 
 def training_and_testing(ARGS):
 	# Check conditions
+	if ARGS['list_columns']:
+		list_columns = list(sorted(ARGS['list_columns']))
+	if not ARGS['list_columns']:
+		list_columns = ['CADD_phred', 'SIFTval', 'VEST4_score', 'gnomAD_exomes_AF']
+
+	if ARGS['flag']:
+		flag = list(sorted(ARGS['flag']))
+	if not ARGS['flag']:
+		flag = ["REVEL_score", "ClinPred_score", "M-CAP_score", "fathmm-XF_coding_score", "Eigen-raw_coding",
+		        "PrimateAI_score", ]
+
+
 	if not os.path.exists(ARGS['output_dir'] + '/TRAIN/training.csv.gz') or not os.path.exists(
 			ARGS['output_dir'] + '/TEST/testing.csv.gz'):
 		logger.warn(
@@ -85,14 +100,14 @@ def training_and_testing(ARGS):
 		t = float(round(prop / (1 - prop), 2))
 
 		ratio = ARGS['ratio']
-		tmp = pd.read_csv(filepath_or_buffer=ARGS['input'], sep='\t', compression='gzip', encoding='utf-8',
-		                  low_memory=False)
-		print(tmp)
-		if ARGS['list_columns'] and ARGS['flag']:
+		tmp = pd.read_csv(filepath_or_buffer=ARGS['input'], sep='\t', compression='gzip', encoding='utf-8', low_memory=False)
+
+
+		if list_columns and flag:
 			# Selection of specific columns to be used from a global dataframe
 			# Example : df with 10 columns, --list_columns column1 column2 column5
-			tmp = select_columns_pandas.select_columns_pandas(tmp, ARGS['list_columns'], ARGS['flag'])
-			print(tmp)
+			tmp = select_columns_pandas.select_columns_pandas(tmp, list_columns, flag)
+			logger.info(tmp)
 
 		# Use of input parameters to build training and testing dataframes (proportion, ratio of data between train and test)
 		# Special attention is paid to remove overlap between evaluation|test sets and training dataset to prevent any overfitting
@@ -103,13 +118,18 @@ def training_and_testing(ARGS):
 		complete_data_begn = complete_data_begn.sample(frac=1)
 		max_size = max(complete_data_path.shape[0], complete_data_begn.shape[0])
 		min_size = min(complete_data_path.shape[0], complete_data_begn.shape[0])
+
+
 		if max_size > (t * min_size):
 			max_size = min_size * t
 		elif max_size < (t * min_size):
 			min_size = max_size / t
-		if min_size < 1000 and min(complete_data_path.shape[0], complete_data_begn.shape[0]) == complete_data_path.shape[0]:
+		if min_size < 1000 and min(complete_data_path.shape[0], complete_data_begn.shape[0]) == \
+				complete_data_path.shape[0]:
 			logger.warn(
 				'CAREFUL : Size of the pathogenic dataset will be < 1000 samples')
+
+
 
 		eval_test_size = ratio
 		train_path = complete_data_path.head(
@@ -131,15 +151,15 @@ def training_and_testing(ARGS):
 
 		# Some stats on Pathogenic and Benign variant numbers in both training and testing dataframes
 
-		print('Training - Path : ' + str(complete_training[complete_training['True_Label'] == 1].shape[0]))
-		print('Training - Benign : ' + str(complete_training[complete_training['True_Label'] == -1].shape[0]))
+		logger.info('Training - Path : ' + str(complete_training[complete_training['True_Label'] == 1].shape[0]))
+		logger.info('Training - Benign : ' + str(complete_training[complete_training['True_Label'] == -1].shape[0]))
 
 		min_size_eval = min(eval_path.shape[0], eval_begn.shape[0])
 		complete_eval = pd.concat([eval_path.sample(frac=1).head(min_size_eval),
 		                           eval_begn.sample(frac=1).head(min_size_eval)]).drop_duplicates(keep='first')
 
-		print('Testing - Path : ' + str(complete_eval[complete_eval['True_Label'] == 1].shape[0]))
-		print('Testing - Benign : ' + str(complete_eval[complete_eval['True_Label'] == -1].shape[0]))
+		logger.info('Testing - Path : ' + str(complete_eval[complete_eval['True_Label'] == 1].shape[0]))
+		logger.info('Testing - Benign : ' + str(complete_eval[complete_eval['True_Label'] == -1].shape[0]))
 
 		# Dumping data
 
@@ -177,10 +197,7 @@ def training_and_testing(ARGS):
 		                      )
 
 		# Generation of a histogram to see most important features used in builded model
-		l = histo_weights.histo_and_metrics(folder=ARGS['output_dir'])
-
-		# Generation of a heatmap based on training data to visualize correlation (based on spearman) between features
-		histo_weights.heatmap(folder=ARGS['output_dir'])
+		histo_weights.histo_and_metrics(folder=ARGS['output_dir'], logger=logger)
 
 	# This parameter, if enabled, will build all possible combinations from a single dataframe if sources are mentionned
 	# Example : A global dataframe based on 3 databases (2 pathogenic : Clinvar and HGMD and 1 benign : gnomAD) was generated
@@ -188,36 +205,49 @@ def training_and_testing(ARGS):
 	# and each of these combinations will be tested with the previously generated outputs. (Overlapping is checked between these combinations and training dataset)
 
 	if ARGS['eval'] and ARGS['eval'].endswith('.csv.gz'):
-		print('EVAL')
+		# TODO : CHANGE NAME
+		print('\n\n')
+		logger.info('--BUILDING & TESTING ON EVALUATION SETS--')
 
-		if os.path.isdir('EVALUATION_SETS_' + ARGS['output_dir']):
+		output_dir = ARGS['output_dir']
+		eval_output_dir = output_dir
+		eval_output_dir = eval_output_dir.split('/')
+		eval_output_dir[-1] = 'EVALUATION_SETS_' + eval_output_dir[-1]
+		eval_output_dir = "/".join(eval_output_dir)
+
+		if os.path.isdir(eval_output_dir):
 			pass
 		else:
-			output_dir = 'EVALUATION_SETS_' + ARGS['output_dir']
-			utils.mkdir(output_dir)
+			utils.mkdir(eval_output_dir)
 
 			# if ARGS['list_columns'] and ARGS['flag']:
-			combination_pandas.combination_pandas(ARGS['eval'], ARGS['output_dir'] + '/TRAIN/training.csv.gz', output_dir, logger, ARGS['list_columns'], ARGS['flag'], CV=ARGS['cross_validation_evaluation'])
-			# else:
-			# 	combination_pandas.combination_pandas(ARGS['eval'], ARGS['output_dir'] + '/TRAIN/training.csv.gz', output_dir, CV=ARGS['cross_validation_evaluation'])
-		l_dir = os.listdir('EVALUATION_SETS_' + ARGS['output_dir'])
-
+			combination_pandas.combination_pandas(ARGS['eval'], output_dir + '/TRAIN/training.csv.gz',
+			                                      eval_output_dir, logger, list_columns, flag,
+			                                      CV=ARGS['cross_validation_evaluation'])
+		# else:
+		# 	combination_pandas.combination_pandas(ARGS['eval'], ARGS['output_dir'] + '/TRAIN/training.csv.gz', output_dir, CV=ARGS['cross_validation_evaluation'])
+		l_dir = os.listdir(eval_output_dir)
 
 		parmap.starmap(test_eval_mp, list(zip(l_dir)), pm_pbar=True, pm_processes=ARGS['threads'])
 
-		# Plots are automatically generated to visualize performance across various scenario for the different combinations
+	# Plots are automatically generated to visualize performance across various scenario for the different combinations
+	print('\n\n')
+	logger.info('--GENERATING PLOTS & STATS--')
+	utils.mkdir(eval_output_dir + '/PLOTS_AND_MEAN_TABLE')
+	maf_plot.violin_plot_scores(eval_output_dir, logger)
+	maf_plot.maf_plot_maf_0(eval_output_dir, ARGS['cross_validation_evaluation'], logger)
+	maf_plot.maf_plot_others(eval_output_dir, ARGS['cross_validation_evaluation'], logger)
 
-	utils.mkdir('EVALUATION_SETS_' + ARGS['output_dir'] + '/PLOTS_AND_MEAN_TABLE')
-	maf_plot.violin_plot_scores('EVALUATION_SETS_' + ARGS['output_dir'])
-	maf_plot.maf_plot_maf_0('EVALUATION_SETS_' + ARGS['output_dir'], ARGS['cross_validation_evaluation'])
-	maf_plot.maf_plot_others('EVALUATION_SETS_' + ARGS['output_dir'], ARGS['cross_validation_evaluation'])
-	# maf_plot.combine_maf_plot('EVALUATION_SETS_' + ARGS['output_dir'] + '/PLOTS_AND_MEAN_TABLE')
+
+# maf_plot.combine_maf_plot('outputs/EVALUATION_SETS_' + ARGS['output_dir'] + '/PLOTS_AND_MEAN_TABLE')
 
 
 # Second one : testing previously generated model on some data (require a dataframe and a model)
 def testing(ARGS):
+	list_columns = list(sorted(ARGS['list_columns']))
+	flag = list(sorted(ARGS['flag']))
 	tmp = select_columns_pandas.select_columns_pandas(
-		pd.read_csv(ARGS['input'], compression='gzip', sep='\t', low_memory=False), ARGS['list_columns'], ARGS['flag'])
+		pd.read_csv(ARGS['input'], compression='gzip', sep='\t', low_memory=False), list_columns, flag)
 	input_modified = ARGS['input'].replace('.csv.gz', '_lite.csv.gz')
 	tmp.to_csv(input_modified, compression='gzip', sep='\t', index=False)
 	TestingClassification(input_data=input_modified,
@@ -235,38 +265,52 @@ def testing(ARGS):
 
 
 def prediction(ARGS):
-	utils.mkdir(ARGS['output_dir'])
-	data = pd.read_csv(filepath_or_buffer=ARGS['input'], sep='\t', compression='gzip', encoding='utf-8',
-	                   low_memory=False)
-	data = select_columns_pandas.select_columns_pandas(data, ARGS['list_columns'], [], progress_bar=False)
+	# BASIC
+	list_columns = list(sorted(ARGS['list_columns']))
+	flag = list(sorted(ARGS['flag']))
+	input_file = ARGS['input']
+	output_file = input_file.replace('.csv.gz', '_MISTIC.csv.gz')
 
-	col_ordered = ['ID', 'True_Label'] + list(sorted(set(list(data.columns)) - {'ID', 'True_Label'}))
-	data = data[col_ordered]
-
-	data.dropna(subset=ARGS['list_columns'], inplace=True)
-
-	data = data.reset_index(drop=True)
-
-	classifiers = dict()
+	output_dir = ARGS['output_dir']
 	model_dir = ARGS['model']
+	select = True
 
+	utils.mkdir(output_dir)
+
+	# IMPORT DF
+	data = pd.read_csv(filepath_or_buffer=input_file, sep='\t', compression='gzip', encoding='utf-8', low_memory=False)
+
+	# SELECT GOOD COLUMNS
+	if select is True:
+		data = select_columns_pandas.select_columns_pandas_dev(data, list_columns, flag, progress_bar=True, fill=False,
+		                                                       dropna=False)
+		col_ordered = ['ID', 'True_Label'] + list(sorted(set(list(data.columns)) - set(['ID', 'True_Label'])))
+		data = data[col_ordered]
+
+	data['True_Label'] = data['True_Label'].replace(-1, 0)
+
+	if 'Amino_acids' in list_columns:
+		l_cols = [e for e in list_columns if e != 'Amino_acids']
+	else:
+		l_cols = list_columns
+
+	data_scoring = data.dropna(subset=l_cols)
+
+	# IMPORT SKLEARN MODELS
+	classifiers = dict()
+	log = list()
 	for mod in glob.glob(model_dir + "/*.pkl"):
 		sk_model = joblib.load(mod)
 		classifiers[os.path.basename(mod).replace('.pkl', '')] = sk_model
+		name = os.path.basename(mod).replace('.pkl', '')
+		data_scoring[name + '_proba'] = sk_model.predict_proba(data_scoring[l_cols])[:, 1]
+		data_scoring[name + '_pred'] = sk_model.predict(data_scoring[l_cols])
+		data = pd.concat([data, data_scoring[[name + '_proba', name + '_pred']]], axis=1)
 
-	data_scoring = data[data.columns.drop(list(data.filter(regex='pred|flag')))]
-	data_scoring = data_scoring[data_scoring.columns[2:]]
+	data = data[["ID", "gnomAD_exomes_AF", 'LogisticRegression_proba', 'RandomForestClassifier_proba',
+	             'VotingClassifier_lr_rf_proba', ]]
 
-	results_df = pd.DataFrame()
-
-	for clf in classifiers:
-		pred_label = classifiers[clf].predict(data_scoring.values)
-		pred_proba = classifiers[clf].predict_proba(data_scoring.values)[:, 1]
-		results_df[clf + '_pred'] = pred_label
-		results_df[clf + '_proba'] = pred_proba
-	data = pd.concat([data, results_df], axis=1)
-
-	data.to_csv(arg_dict['output_dir'] + '_MISTIC.csv.gz', compression='gzip', index=False, sep='\t')
+	data.to_csv(output_file, compression='gzip', index=False, sep='\t')
 
 
 if __name__ == "__main__":
@@ -426,7 +470,7 @@ if __name__ == "__main__":
 	optional.add_argument('--threads',
 	                      type=int,
 	                      metavar='',
-	                      default=1,
+	                      default=4,
 	                      help='Enable parallelization of specific algorithms (example : LogisticRegression)'
 	                           'To use all cores available on your hardware, specify -1'
 	                      )
@@ -542,25 +586,27 @@ if __name__ == "__main__":
 
 	if arg_dict["output_dir"] is None:
 		cwd = os.getcwd()
-		output_dir = cwd + '/MISTIC_toolbox_OUTPUT'
+		output_dir = cwd + '/outputs/OUTPUT_EXAMPLE'
 		arg_dict["output_dir"] = output_dir
 
-	# if not os.path.exists(arg_dict["output_dir"]) and arg_dict["output_dir"] is not None:
-	# 	try:
-	# 		pathlib.Path(arg_dict["output_dir"]).mkdir(exist_ok=True)
-	# 	except FileNotFoundError:
-	# 		logger.error('Unable to find or create this output directory')
-	# 		sys.exit("============\nSee you soon :)\n============")
+	if not os.path.exists(arg_dict["output_dir"]) and arg_dict["output_dir"] is not None:
+		try:
+			pathlib.Path(arg_dict["output_dir"]).mkdir(exist_ok=True)
+		except FileNotFoundError:
+			logger.error('Unable to find or create this output directory')
+			sys.exit("============\nSee you soon :)\n============")
 
-	# if arg_dict['input'] is not None:
-	# 	test = os.path.isfile(arg_dict['input'])
-	# 	if test is True:
-	# 		pass
-	# 	if test is False:
-	# 		logger.error('File not exists')
-	# 		sys.exit("============\nSee you soon :)\n============")
+	if arg_dict['input'] is not None:
+		test = os.path.isfile(arg_dict['input'])
+		if test is True:
+			pass
+		if test is False:
+			logger.error('File not exists')
+			sys.exit("============\nSee you soon :)\n============")
 
-	if arg_dict['fill_blanks_strategy'] is not None and arg_dict['fill_blanks_strategy'] not in ['mean', 'median', 'constant', 'most_frequent']:
+	if arg_dict['fill_blanks_strategy'] is not None and arg_dict['fill_blanks_strategy'] not in ['mean', 'median',
+	                                                                                             'constant',
+	                                                                                             'most_frequent']:
 		logger.error('Strategy selected not exists')
 		sys.exit("============\nSee you soon :)\n============")
 
@@ -569,10 +615,7 @@ if __name__ == "__main__":
 
 	# LAUNCHING MODES
 
-	if arg_dict["train"] is True and (arg_dict["test"] or arg_dict["train_and_test"]) is False:
-		training(arg_dict)
-
-	elif arg_dict['prediction'] is True:
+	if arg_dict['prediction'] is True:
 		prediction(arg_dict)
 
 	elif arg_dict["train_and_test"] is True and (arg_dict["test"] or arg_dict["train"]) is False:

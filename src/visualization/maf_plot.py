@@ -1,17 +1,17 @@
 import collections
-import cv2
 import os
-
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from tqdm import tqdm
 
-competitors = ['Eigen', 'PrimateAI', 'FATHMM-XF', 'ClinPred', 'REVEL', 'M-CAP', 'DelMisPred']
+competitors = ['Eigen', 'PrimateAI', 'FATHMM-XF', 'ClinPred', 'REVEL', 'M-CAP', 'MISTIC']
 
 
-def violin_plot_scores(dir):
+def violin_plot_scores(dir, logger):
+	logger.info('Plotting violin plots distribution')
+
 	dict_names = {
 		'ID': 'ID',
 		'True_Label': 'True_Label',
@@ -21,8 +21,8 @@ def violin_plot_scores(dir):
 		'PrimateAI_flag': 'PrimateAI',
 		'Eigen-raw_coding_flag': 'Eigen',
 		'fathmm-XF_coding_flag': 'FATHMM-XF',
-		'VotingClassifier_proba': 'DelMisPred',
-		'LogisticRegression_proba': 'DelMisPred',
+		'VotingClassifier_proba': 'MISTIC',
+		'LogisticRegression_proba': 'MISTIC',
 
 	}
 
@@ -33,8 +33,8 @@ def violin_plot_scores(dir):
 		'PrimateAI': 0.803,
 		'Eigen': 0,
 		'FATHMM-XF': 0.5,
-		'DelMisPred': 0.5,
-		'DelMisPred_LR': 0.5,
+		'MISTIC': 0.5,
+		'MISTIC_LR': 0.5,
 		'GradientBoostingClassifier': 0.5,
 		'LogisticRegression': 0.5,
 		'RandomForestClassifier': 0.5,
@@ -49,11 +49,11 @@ def violin_plot_scores(dir):
 		"REVEL": 0.235,
 		"FATHMM-XF": 0.22374,
 		"PrimateAI": 0.358395427465,
-		"DelMisPred": 0.277,
-		# "DelMisPred"    :   0.198003954007379,
+		"MISTIC": 0.277,
+		# "MISTIC"    :   0.198003954007379,
 	}
 
-	classifiers = ['Eigen', 'PrimateAI', 'FATHMM-XF', 'ClinPred', 'REVEL', 'M-CAP', 'DelMisPred']
+	classifiers = ['Eigen', 'PrimateAI', 'FATHMM-XF', 'ClinPred', 'REVEL', 'M-CAP', 'MISTIC']
 
 	pool_df_0 = pd.DataFrame()
 	pool_df = pd.DataFrame()
@@ -139,7 +139,7 @@ def violin_plot_scores(dir):
 	plt.close()
 
 
-def maf_plot_maf_0(dir, cv):
+def maf_plot_maf_0(dir, cv, logger):
 	dict_names_0 = {
 		'ID': 'ID',
 		'True_Label': 'True_Label',
@@ -149,10 +149,10 @@ def maf_plot_maf_0(dir, cv):
 		'PrimateAI_flag': 'PrimateAI',
 		'Eigen-raw_coding_flag': 'Eigen',
 		'fathmm-XF_coding_flag': 'FATHMM-XF',
-		'Logistic Regression': 'DelMisPred',
+		'Logistic Regression': 'MISTIC',
 	}
 
-	print('Plotting specific variants with no maf ...')
+	logger.info('Plotting results for variants without MAF ...')
 
 	tmp_list = list()
 	i = 0
@@ -299,9 +299,9 @@ def maf_plot_maf_0(dir, cv):
 	plt.close(fig)
 
 
-def maf_plot_others(dir, cv):
+def maf_plot_others(dir, cv, logger):
 	# cv=5
-	print('\nPlotting gradation maf ...')
+	logger.info('Plotting results for variants with MAF ...')
 	tmp_list = list()
 	sec_list = list()
 
@@ -315,7 +315,7 @@ def maf_plot_others(dir, cv):
 		'Eigen-raw_coding_flag': 'Eigen',
 		'fathmm-XF_coding_flag': 'FATHMM-XF',
 		'VotingClassifier': 'Voting Classifier',
-		'Voting Classifier': 'DelMisPred',
+		'Voting Classifier': 'MISTIC',
 	}
 
 	sorter = ["Singleton", "<0.0001", "<0.001", "<0.005", "<0.01"]
@@ -476,58 +476,3 @@ def maf_plot_others(dir, cv):
 		plt.close(fig)
 
 
-def annotate_image(image, text):
-	# Window name in which image is displayed
-
-	# font
-	font = cv2.FONT_HERSHEY_SIMPLEX
-
-	# org
-	org = (50, 110)
-
-	# fontScale
-	fontScale = 5
-
-	# Blue color in BGR
-	color = (0, 0, 0)
-
-	# Line thickness of 2 px
-	thickness = 10
-
-	# Using cv2.putText() method
-	image = cv2.putText(image, text, org, font,
-	                    fontScale, color, thickness, cv2.LINE_AA)
-	return image
-
-
-def combine_maf_plot(dir):
-	d_order = {
-		'ClinVar_NEW': 0,
-		'DoCM': 1,
-		# 'SwissVar' : 2,
-		'Specific': 2,
-	}
-	annotations = ['A', 'B', 'C', ]
-
-	images_list = [None] * 3
-	listdir = list(sorted(os.listdir(dir)))
-	listdir = [d for d in listdir if d.endswith(
-		'.png') and 'Combine' not in d and 'humsavar' not in d and 'Score' not in d and 'SwissVar' not in d]
-	i = 0
-	for d, annot in zip(listdir, annotations):
-		# if d.endswith('.png') and 'Specific' not in d and 'Combine' not in d and 'humsavar' not in d and 'Score' not in d:
-		if d.endswith(
-				'.png') and 'Combine' not in d and 'humsavar' not in d and 'Score' not in d and 'SwissVar' not in d:
-			i += 1
-			name = d.split(' - ')[0]
-			print(name)
-			im = cv2.imread(dir + '/' + d)
-			im_s = cv2.resize(im, dsize=(0, 0), fx=0.4, fy=0.4)
-			im_annot = annotate_image(im_s, annot)
-			images_list[d_order[name]] = [im_annot]
-
-	def concat_tile(im_list_2d):
-		return cv2.vconcat([cv2.hconcat(im_list_h) for im_list_h in im_list_2d])
-
-	im_tile = concat_tile(images_list)
-	cv2.imwrite(dir + '/Combine_maf_plot.png', im_tile)

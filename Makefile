@@ -4,10 +4,12 @@
 # GLOBALS                                                                       #
 #################################################################################
 
+
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROFILE = default
 PROJECT_NAME = MISTIC-public
 PYTHON_INTERPRETER = python
+
 
 ifeq (,$(shell which conda))
 HAS_CONDA=False
@@ -21,7 +23,7 @@ endif
 
 
 ## Set up python interpreter environment
-1_create_environment:
+create_environment:
 ifeq (True,$(HAS_CONDA))
 	@echo ">>> Detected conda, creating conda environment."
 	conda env create --name $(PROJECT_NAME) --file=MISTIC-public.yml
@@ -33,23 +35,19 @@ endif
 
 
 ## Download RAW Data
-2_dl_data:
+dl_data:
 ifeq (default,$(PROFILE))
-#	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/Databases/clinvar/clinvar_20180930_annot.vcf.gz data/raw/deleterious
-#	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/Databases/hgmd/HGMD_PRO_2018.1_hg19_annot.vcf.gz data/raw/deleterious
-#	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/gnomAD/latest/vcf/exomes/gnomad.exomes.r2.1.1.sites.vcf.bgz data/raw/population
-#	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/WORKING_RADMEL/TRAINING_SETS/* data/raw/training_sets
-	ln -s /gstock/biolo_datasets/variation/benchmark/WORKING_RADMEL/TRAINING_SETS/RAW_VCF/* data/raw/training_sets/.
-	ln -s /gstock/biolo_datasets/variation/benchmark/Databases/clinvar/clinvar_20180930_annot.vcf.gz data/raw/deleterious/.
-	ln -s /gstock/biolo_datasets/variation/benchmark/Databases/hgmd/HGMD_PRO_2018.1_hg19_annot.vcf.gz data/raw/deleterious/.
-	ln -s /gstock/biolo_datasets/variation/gnomAD/latest/vcf/exomes/gnomad.exomes.r2.1.1.sites.vcf.bgz data/raw/population/.
+	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/Databases/clinvar/clinvar_20180930_annot.vcf.gz data/raw/deleterious
+	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/gnomAD/latest/vcf/exomes/gnomad.exomes.r2.1.1.sites.vcf.bgz data/raw/population
+	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/MISTIC/TRAINING_SETS/* data/raw/training_sets
 endif
 
 ## Prepare RAW data by applying filters
-3_prepare_data: requirements
+prepare_data: requirements
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py
 
-
+train:
+	$(PYTHON_INTERPRETER) MISTIC.py --train_and_test -i data/examples/pandas_mini_training.csv.gz -e data/examples/pandas_mini_eval.csv.gz
 
 ## Delete all compiled Python files
 clean:

@@ -9,7 +9,6 @@ dependencies:
   - blas=1.1=openblas
   - bzip2=1.0.8=h516909a_2
   - ca-certificates=2019.11.28=hecc5488_0
-  - cairo=1.16.0=h18b612c_1001
   - certifi=2019.11.28=py37hc8dfbb8_1
   - click=7.1.1=pyh8c360ce_0
   - coloredlogs=14.0=py37hc8dfbb8_1
@@ -19,80 +18,63 @@ dependencies:
   - cyvcf2=0.11.5=py37hce88a48_1
   - dbus=1.13.6=he372182_0
   - expat=2.2.9=he1b5a44_2
-  - ffmpeg=4.1.3=h167e202_0
   - fontconfig=2.13.1=he4413a7_1000
-  - freetype=2.10.0=he983fc9_1
+  - freetype=2.10.0=he06d7ca_2
   - gettext=0.19.8.1=hc5be6a0_1002
-  - giflib=5.2.1=h516909a_2
   - glib=2.58.3=py37he00f558_1003
-  - gmp=6.2.0=he1b5a44_2
-  - gnutls=3.6.5=hd3a4fd2_1002
-  - graphite2=1.3.13=hf484d3e_1000
   - gst-plugins-base=1.14.5=h0935bb2_2
   - gstreamer=1.14.5=h36ae1b5_2
-  - harfbuzz=2.4.0=h37c48d4_1
-  - hdf5=1.10.5=nompi_h3c11f04_1104
   - htslib=1.9=h4da6232_3
   - humanfriendly=8.1=py37hc8dfbb8_1
   - icu=58.2=hf484d3e_1000
-  - jasper=1.900.1=h07fcdf6_1006
   - jpeg=9c=h14c3975_1001
   - kiwisolver=1.1.0=py37h99015e2_1
   - krb5=1.16.4=h2fd8d38_0
-  - lame=3.100=h14c3975_1001
   - ld_impl_linux-64=2.34=h53a641e_0
   - libblas=3.8.0=11_openblas
   - libcblas=3.8.0=11_openblas
   - libcurl=7.68.0=hda55be3_0
   - libdeflate=1.5=h516909a_0
   - libedit=3.1.20170329=hf8c457e_1001
-  - libffi=3.2.1=he1b5a44_1006
+  - libffi=3.2.1=he1b5a44_1007
   - libgcc-ng=9.2.0=h24d8f2e_2
   - libgfortran-ng=7.3.0=hdf63c60_5
   - libgomp=9.2.0=h24d8f2e_2
   - libiconv=1.15=h516909a_1005
   - liblapack=3.8.0=11_openblas
-  - liblapacke=3.8.0=11_openblas
   - libopenblas=0.3.6=h5a2b251_2
   - libpng=1.6.37=hed695b0_0
   - libssh2=1.8.2=h22169c7_2
   - libstdcxx-ng=9.2.0=hdf63c60_2
-  - libtiff=4.1.0=hc7e4089_5
   - libuuid=2.32.1=h14c3975_1000
-  - libwebp=1.0.2=h56121f0_5
-  - libwebp-base=1.1.0=2
   - libxcb=1.13=h14c3975_1002
   - libxml2=2.9.9=h13577e0_2
-  - lz4-c=1.8.3=he1b5a44_1001
-  - matplotlib=2.2.3=py37hb69df0a_0
-  - matplotlib-base=3.1.1=py37hfd891ef_0
+  - matplotlib=2.2.3=py37h8a2030e_1
+  - matplotlib-base=2.2.3=py37h60b886d_1
   - ncurses=6.1=hf484d3e_1002
-  - nettle=3.4.1=h1bed415_1002
   - numpy=1.18.1=py37h95a1406_0
   - openblas=0.3.3=h9ac9557_1001
-  - opencv=4.1.1=py37ha799480_1
-  - openh264=1.8.0=hdbcaa40_1000
-  - openssl=1.1.1d=h516909a_0
+  - openssl=1.1.1e=h516909a_0
   - pandas=0.23.4=py37h637b7d7_1000
   - parmap=1.5.2=py_0
   - patsy=0.5.1=py_0
   - pcre=8.44=he1b5a44_0
   - pip=20.0.2=py_2
-  - pixman=0.38.0=h516909a_1003
   - pthread-stubs=0.4=h14c3975_1001
   - pyparsing=2.4.6=py_0
-  - pyqt=5.9.2=py37hcca6a23_4
+  - pyqt=5.6.0=py37h13b7fb3_1008
   - python=3.7.6=h357f687_4_cpython
   - python-dateutil=2.8.1=py_0
   - python_abi=3.7=1_cp37m
   - pytz=2019.3=py_0
-  - qt=5.9.7=h52cfd70_2
+  - pyyaml=5.3.1=py37h8f50634_0
+  - qt=5.6.3=h8bf5577_3
   - readline=8.0=hf8c457e_0
   - scikit-learn=0.20.2=py37_blas_openblashebff5e3_1400
   - scipy=1.2.1=py37_blas_openblash1522bff_0
   - seaborn=0.9.0=py_2
   - setuptools=46.0.0=py37hc8dfbb8_2
-  - sip=4.19.8=py37hf484d3e_1000
+  - sip=4.18.1=py37hf484d3e_1000
   - six=1.14.0=py_1
   - sqlite=3.30.1=hcee41ef_0
   - statsmodels=0.11.1=py37h8f50634_1
@@ -100,19 +82,10 @@ dependencies:
   - tornado=6.0.4=py37h8f50634_1
   - tqdm=4.43.0=py_0
   - wheel=0.34.2=py_1
-  - x264=1!152.20180806=h14c3975_0
-  - xorg-kbproto=1.0.7=h14c3975_1002
-  - xorg-libice=1.0.10=h516909a_0
-  - xorg-libsm=1.2.3=h84519dc_1000
-  - xorg-libx11=1.6.9=h516909a_0
   - xorg-libxau=1.0.9=h14c3975_0
   - xorg-libxdmcp=1.1.3=h516909a_0
-  - xorg-libxext=1.3.4=h516909a_0
-  - xorg-libxrender=0.9.10=h516909a_1002
-  - xorg-renderproto=0.11.1=h14c3975_1002
-  - xorg-xextproto=7.3.0=h14c3975_1002
-  - xorg-xproto=7.0.31=h14c3975_1007
   - xz=5.2.4=h14c3975_1001
   - zlib=1.2.11=h516909a_1006
-  - zstd=1.4.4=h3b9ef0a_1
+  - pip:
+    - pprint
 prefix: /home/weber/.conda/envs/MISTIC-public
