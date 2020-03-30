@@ -88,4 +88,10 @@ dependencies:
   - zlib=1.2.11=h516909a_1006
   - pip:
     - pprint
+    - sphinx
+    - sphinx_rtd_theme
+    - sphinx-gallery
+    - sphinxcontrib-napoleon
+    - sphinxcontrib-bibtex
+    - sphinxcontrib-inlinesyntaxhighlight
 prefix: /home/weber/.conda/envs/MISTIC-public
