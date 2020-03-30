@@ -12,9 +12,19 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
+
 def setup_custom_logger(name, output_dir):
+	"""
+
+	Args:
+		name:
+		output_dir:
+
+	Returns:
+
+	"""
 	formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
-								  datefmt='%Y-%m-%d %H:%M:%S')
+	                              datefmt='%Y-%m-%d %H:%M:%S')
 	mkdir('Logging')
 	# handler = logging.FileHandler('Logging/' + output_dir + '_log.txt', mode='w')
 	# handler.setFormatter(formatter)
@@ -158,43 +168,13 @@ def get_data(input_data):
 
 
 def prepare_input_data(input_data,
-					   fill_blanks=True,
-					   strategy="median",
-					   standardize=True,
-					   output_dir="",
-					   logger=None,
-					   pred=False
-					   ):
+                       fill_blanks=True,
+                       strategy="median",
+                       standardize=True,
+                       pred=False
+                       ):
 	"""
-	Prepare the data to be ready for sklearn
-
-	Parameters
-	-----------
-	fill_blanks : bool
-		If enable, fill blanks with the selected strategy in the --fill_blank_strategy parameter
-	standardize : bool
-		If enable, standardize the dataframe (µ=0, σ=1) with StandardScaler() (see scikit-learn)
-	strategy : str
-		Strategy for filling blanks, if enable. "mean", "median", "most_frequent" or "constant",
-		check : http://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html
-	output_dir : str
-		Output_directory, default = current directory
-	input_data : String reference the input file (CSV format)
-		path to the input file
-	logger : Logging object
-
-	Returns
-	--------
-	pd_dict : dict
-		Returns dictionnary with preprocess data associate to
-		each scenario (complete data or specific columns)
-		without blanks and numeric values
-
-	Args:
-		output_dir:
-		logger:
-		output_dir:
-
+	TEST
 	"""
 	data = get_data(input_data=input_data)
 	# print(data)
@@ -207,7 +187,7 @@ def prepare_input_data(input_data,
 	columns_without_ids.remove('True_Label')
 	info = data[['ID', 'True_Label']]
 
-	data_without_blanks = pd.DataFrame()  # type: DataFrame
+	data_without_blanks = pd.DataFrame()
 	if fill_blanks is True:
 		data_without_blanks = filling_blank_cells(df.drop(['ID', 'True_Label'], axis=1), strategy=strategy)
 	if fill_blanks is False:
@@ -224,6 +204,7 @@ def prepare_input_data(input_data,
 
 	# print('\n')
 	return complete_data
+
 
 def filling_blank_cells(data_inp, strategy):
 	"""
@@ -246,6 +227,7 @@ def filling_blank_cells(data_inp, strategy):
 	data_out = data_out.transform(data_inp)
 	pd_data = pd.DataFrame(data_out)
 	return pd_data
+
 
 def mkdir(directory):
 	"""

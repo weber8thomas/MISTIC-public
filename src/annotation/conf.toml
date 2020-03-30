@@ -9,15 +9,3 @@ file="$CADD file"
 names=["GC", "Grantham", "CADD_raw", "CADD_phred"]
 ops=["self", "self", "self", "self"]
 columns=[14, 110, 115, 116]
-
-[[annotation]]
-file="$ ExAC VCF"
-fields=["ESP_AF_GLOBAL", "ESP_AF_POPMAX"]
-names=["exac_af_global", "exac_af_popmax"]
-ops=["self", "self"]
-
-[[annotation]]
-file="$ 1000 Genomes VCF"
-fields=["AF"]
-names=["1kg_af_global"]
-ops=["self"]

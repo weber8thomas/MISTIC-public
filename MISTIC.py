@@ -265,6 +265,7 @@ def testing(ARGS):
 
 
 def prediction(ARGS):
+	return_df = True
 	# BASIC
 	list_columns = list(sorted(ARGS['list_columns']))
 	flag = list(sorted(ARGS['flag']))
@@ -273,19 +274,21 @@ def prediction(ARGS):
 
 	output_dir = ARGS['output_dir']
 	model_dir = ARGS['model']
-	select = True
+	select = ARGS['wt_select']
 
 	utils.mkdir(output_dir)
 
 	# IMPORT DF
 	data = pd.read_csv(filepath_or_buffer=input_file, sep='\t', compression='gzip', encoding='utf-8', low_memory=False)
+	data['ID'] = data['ID'].str.lstrip('chr_')
 
 	# SELECT GOOD COLUMNS
 	if select is True:
-		data = select_columns_pandas.select_columns_pandas_dev(data, list_columns, flag, progress_bar=True, fill=False,
-		                                                       dropna=False)
+		data = select_columns_pandas.select_columns_pandas(data, list_columns, flag, progress_bar=False, fill=True, dropna=False)
 		col_ordered = ['ID', 'True_Label'] + list(sorted(set(list(data.columns)) - set(['ID', 'True_Label'])))
 		data = data[col_ordered]
+	if select is False:
+		data = data[list_columns + flag]
 
 	data['True_Label'] = data['True_Label'].replace(-1, 0)
 
@@ -307,10 +310,20 @@ def prediction(ARGS):
 		data_scoring[name + '_pred'] = sk_model.predict(data_scoring[l_cols])
 		data = pd.concat([data, data_scoring[[name + '_proba', name + '_pred']]], axis=1)
 
-	data = data[["ID", "gnomAD_exomes_AF", 'LogisticRegression_proba', 'RandomForestClassifier_proba',
-	             'VotingClassifier_lr_rf_proba', ]]
+	col_ordered = ['ID', 'True_Label'] + list(sorted(set(list(data.columns)) - set(['ID', 'True_Label'])))
+	data = data[col_ordered]
+	with_maf = data[data['gnomAD_exomes_AF'] != 0]
+	without_maf = data[data['gnomAD_exomes_AF'] == 0]
+	data['MISTIC_pred'] = pd.concat([with_maf['MISTIC_VC_pred'], without_maf['MISTIC_LR_pred']], axis=0).sort_index()
+	data['MISTIC_proba'] = pd.concat([with_maf['MISTIC_VC_proba'], without_maf['MISTIC_LR_proba']], axis=0).sort_index()
+	data.drop(['MISTIC_VC_pred', 'MISTIC_VC_proba', 'MISTIC_LR_pred', 'MISTIC_LR_proba'], axis=1, inplace=True)
 
-	data.to_csv(output_file, compression='gzip', index=False, sep='\t')
+
+	if return_df is False:
+		data.to_csv(output_file, compression='gzip', index=False, sep='\t')
+	elif return_df is True:
+		return data
+
 
 
 if __name__ == "__main__":
@@ -395,6 +408,10 @@ if __name__ == "__main__":
 
 	optional.add_argument('-std', '--standardize',
 	                      action='store_true',
+	                      help='Standardize data with scikit-learn.preprocessing.StandardScaler, default=False')
+
+	optional.add_argument('--wt_select',
+	                      action='store_false',
 	                      help='Standardize data with scikit-learn.preprocessing.StandardScaler, default=False')
 
 	optional.add_argument('-fb', '--fill_blanks',

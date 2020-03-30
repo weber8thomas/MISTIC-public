@@ -1,15 +1,16 @@
 import ast
-from src.features import AAIndex
+import sys
+from src.features.AAIndex import AAIndex
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-
-aa = AAIndex.AAIndex()
-
+np.set_printoptions(suppress=True)
+aa = AAIndex()
+# from pandarallel import pandarallel
+# pandarallel.initialize(progress_bar=True, nb_workers=30)
 
 def new_columns_matrix(array):
 	list_matrix = list()
-	AA = list()
 	for x in array:
 		if '/' in x:
 			AA = x.split('/')
@@ -24,8 +25,31 @@ def new_columns_matrix(array):
 		list_matrix.append(score)
 	return list_matrix
 
+def process_column(row, col):
+	processed_row = row
+	if processed_row == '-':
+		processed_row = np.nan
+	if type(processed_row) is str and col != "genename":
+		if '[' in processed_row:
+			processed_row = ast.literal_eval(processed_row)
+			processed_row = [float(e) for e in processed_row if e not in ['', '.', 'NaN', 'nan', 'None', 'NA', '-']]
+			if 'SIFT' in col:
+				processed_row = min(processed_row)
+			else:
+				processed_row = max(processed_row)
+	if col == 'genename':
+		processed_row = str(processed_row)
+		if processed_row[0] == '[':
+			processed_row = eval(processed_row)[-1]
+	return processed_row
 
-def select_columns_pandas(df, list_columns, flag, progress_bar=True, HS=False):
+# TODO : WORK on select columns speed, too slow due to GC or other things
+
+def select_columns_pandas(df, list_columns, flag,  progress_bar=True, HS=False, fill=False, dropna=True):
+
+
+	# def select_columns_pandas(df, list_columns, flag):
+
 	list_columns = ['ID', 'True_Label'] + list_columns
 
 	matrix_cols = ['ANDN920101', 'ARGP820101', 'ARGP820102', 'ARGP820103', 'BEGF750101', 'BEGF750102', 'BEGF750103',
@@ -152,16 +176,6 @@ def select_columns_pandas(df, list_columns, flag, progress_bar=True, HS=False):
 		'PrimateAI_score': 0.803,
 		'Eigen-raw_coding': 0,
 	}
-	thresholds_sup_HS = {
-		"ClinPred_score": 0.298126307851977,
-		"Eigen-raw_coding": -0.353569576359789,
-		"M-CAP_score": 0.026337,
-		"REVEL_score": 0.235,
-		"fathmm-XF_coding_score": 0.22374,
-		"PrimateAI_score": 0.358395427465,
-		# "MISTIC": 0.277,
-		# "MISTIC"    :   0.198003954007379,
-	}
 
 	median_dict = {
 		"29way_logOdds": 14,
@@ -172,6 +186,7 @@ def select_columns_pandas(df, list_columns, flag, progress_bar=True, HS=False):
 		"HI_score": 0.25,
 		"MetaLR_score": 0.5,
 		"MetaSVM_score": 0.82257,
+		"MPC_score" : 0.5264,
 		"phastCons100way_vertebrate": 1,
 		"phastCons17way_primate": 0.8,
 		"phastCons30way_mammalian": 0.9,
@@ -183,9 +198,10 @@ def select_columns_pandas(df, list_columns, flag, progress_bar=True, HS=False):
 		"VEST4_score": 0.5,
 	}
 
-	unwanted = ['', '.', 'NaN', 'nan', 'None', 'NA']
+	competitors = ['ClinPred_score', 'REVEL_score', 'M-CAP_score', 'fathmm-XF_coding_score']
 
-	df['ID'] = df['ID'].str.replace('chr', '')
+
+	df['ID'] = df['ID'].str.replace('chr','')
 	df = df[list_columns + flag]
 
 	# df = pd.read_csv(fname, sep='\t', compression='gzip', low_memory=False)
@@ -194,44 +210,37 @@ def select_columns_pandas(df, list_columns, flag, progress_bar=True, HS=False):
 	if 'Source_flag' in list(df.columns):
 		flag += ['Source_flag']
 
+
 	disable = None
 	if progress_bar is False:
 		disable = True
 
-	# for col in df.columns:
 
+	# TODO : 1rst function replace will pandas parallel apply | df, col, median_dict, fill, disable
 	for col in tqdm(df.columns, disable=disable):
 		if 'gnomAD' in col or 'CCRS_score' in col:
 			df[col].fillna(0, inplace=True)
-		if col in median_dict:
-			df[col].fillna(median_dict[col], inplace=True)
+		if fill is True:
+			if col in median_dict:
+				df[col].fillna(median_dict[col], inplace=True)
 
-		for i, row in enumerate(df[col]):
-			if type(row) is str and col != "genename":
-				if '[' in row:
-					row = ast.literal_eval(row)
-					row = [float(e) for e in row if e not in unwanted]
-					if 'SIFT' in col:
-						row = min(row)
-					else:
-						row = max(row)
-					df.loc[i, col] = row
-			if col == 'genename':
-				row = str(row)
-				if row[0] == '[':
-					row = eval(row)[-1]
-					df.loc[i, col] = row
+		df[col] = df[col].apply(lambda row: process_column(row, col))
+
 
 	rename_dict = dict()
 	# df.dropna(inplace=True)
+
+
+	# TODO : 2nd function replace with parallel apply
 	for col in df.columns:
 		if col in flag:
 			if 'Eigen' in col:
 				rename_dict[col] = col.replace('_coding', '_coding_flag')
-			elif col == 'genename':
+			elif col in ['genename', 'CLASS', 'CLNSIG', 'CLNREVSTAT']:
 				rename_dict[col] = col + '_flag'
 			else:
 				rename_dict[col] = col.replace('_score', '_flag')
+
 
 		col_name_pred = col + '_pred'
 		if HS is True:
@@ -239,16 +248,23 @@ def select_columns_pandas(df, list_columns, flag, progress_bar=True, HS=False):
 		if col in thresholds_sup:
 			df[col] = pd.to_numeric(df[col].dropna())
 			df[col_name_pred] = np.where(df[col] > thresholds_sup[col], 1, -1)
+			df.loc[df[col].isna(), col_name_pred] = np.nan
+
+
+
 	df.rename(columns=rename_dict, inplace=True)
-	df = df.dropna(subset=list_columns, axis=0).reset_index(drop=True)
+	if dropna is True:
+		df = df.dropna(subset=list_columns, axis=0).reset_index(drop=True)
 	if 'Amino_acids' in list_columns:
-		l_matrix = pd.DataFrame(new_columns_matrix(df['Amino_acids'].values))
+		l_matrix = pd.concat([df['Amino_acids'].dropna(), pd.DataFrame(new_columns_matrix(df['Amino_acids'].dropna().values))], axis=1)
+		l_matrix = l_matrix[list(l_matrix.columns)[1:]]
+
 		if matrix_cols_selected:
 			l_matrix = l_matrix[matrix_cols_selected]
 		df = pd.concat([df, l_matrix], axis=1)
 		list_columns += matrix_cols
 		df.drop('Amino_acids', axis=1, inplace=True)
 
-	col_ordered = ['ID', 'True_Label'] + list(sorted(set(list(df.columns)) - {'ID', 'True_Label'}))
+	col_ordered = ['ID', 'True_Label'] + list(sorted(set(list(df.columns)) - set(['ID', 'True_Label'])))
 	df = df[col_ordered]
 	return df

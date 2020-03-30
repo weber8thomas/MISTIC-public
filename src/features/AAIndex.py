@@ -5,7 +5,7 @@ import os
 import sys
 import time
 from tqdm import tqdm
-
+import pathlib
 start_time = time.time()
 logger = logging.getLogger(__name__)
 
@@ -13,8 +13,17 @@ class AAIndex(object):
 
     def __init__(self):
         self.local_dir = os.path.join('')
+        current_path = os.path.dirname(os.path.realpath(__file__)).split('/')
+        current_path_project = list()
+        for dir in current_path:
+            if dir != 'MISTIC-public':
+                current_path_project.append(dir)
+            else:
+                break
+        current_path_project.append('MISTIC-public')
+        current_path_project = "/".join(current_path_project)
 
-        self.data_dir = os.path.join('data/features')
+        self.data_dir = os.path.join(current_path_project + '/data/features')
         self.reference_data = None
         self.reference_data_wo_na = None
         self.transtion_scores_wo_na = None
@@ -27,7 +36,7 @@ class AAIndex(object):
 
     def __load_list_files(self, fnames):
         list_files_data = dict()
-        for f in tqdm(iterable=fnames, desc='Loading list files', leave=False):
+        for f in tqdm(iterable=fnames, desc='Loading list files', leave=False, disable=True):
             tmp_fname = f.split('.')[0].split('_')[-1]
             tmp_fname_data = dict()
 
@@ -46,7 +55,7 @@ class AAIndex(object):
 
     def __load_matrices(self, fnames):
         matrices_data = dict()
-        for i, f in enumerate(tqdm(iterable=fnames, desc='Loading matices', leave=False)):
+        for i, f in enumerate(tqdm(iterable=fnames, desc='Loading matices', leave=False, disable=True)):
             if f.endswith('1.txt'):
                 tmp_source = f.replace('.txt', '')
                 tmp_data = self.__parse_format1(fname=os.path.join(self.data_dir, f))

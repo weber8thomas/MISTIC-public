@@ -205,17 +205,6 @@ def plot_roc_curve_testing(y_test, results_proba, output_dir, predicted_labels, 
 	"""
     Method for plot ROC comparison between algorithms
 
-    Args:
-        ylim:
-        data:
-        predicted_labels:
-        y_test:
-        results_proba : dict
-            Store the proba obtained for each iteration of CV for every algorithm used
-        output_dir: str
-            Directory where will be save the plots
-    Returns:
-        None
     """
 	# output_dir = output_dir + '/Plots/ROC_plots'
 	dict_auc = dict()
@@ -316,20 +305,6 @@ def plot_roc_curve_testing(y_test, results_proba, output_dir, predicted_labels, 
 def print_stdout(logger, log, output_dir, predicted_labels=None, labels=None, data=None):
 	"""
     Print to standard output and save results table to csv and html table
-
-    Args:
-        logger:
-        predicted_labels:
-        labels:
-        data:
-        log: Pandas Dataframe
-            Dataframe with the metrics (ROC-AUC, PR-AUC, Accuracy ...)
-            linked to each scenario
-        output_dir: str
-            Name of the output directory
-
-    Returns:
-        None
 
     """
 
