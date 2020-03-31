@@ -8,7 +8,6 @@ Contents :
 .. toctree::
    :maxdepth: 1
 
-   evaluation
    features
    models
    utils
