@@ -8,7 +8,6 @@ Contents :
 .. toctree::
    :maxdepth: 1
 
-   data
    evaluation
    features
    models
