@@ -53,7 +53,7 @@ Annotation files from CADD and dbNSFP can be found below :
 - location : `ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/Annot_datasets/dbNSFP/v4.0/dbNSFP_final_hg19.gz`
 - https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz
 
-> :note: dbNSFP was converted to hg19 format and trimmed of some unused columns at the end of the file
+> **Note** :  dbNSFP was converted to hg19 format and trimmed of some unused columns at the end of the file
 
 To annotate VCF files with both VEP & vcfanno, you can find configuration files used in the development of MISTIC here : `src/annotation`
 
@@ -106,7 +106,7 @@ To perform
 - bcftools
 - bgzip + tabix
 
-> :note: 1000 genomes indivudal separated exomes can be download from our server  
+> **Note** : 1000 genomes indivudal separated exomes can be download from our server  
 
 1. Download data - location : `ssh.lbgi.fr:/gstock/biolo_datasets/variation/public_genomes/1000G/phase1/individual_vcfs/full/*`
 
@@ -137,18 +137,30 @@ To perform
     │   ├── processed      <- Final VCF data after filtering.
     │   └── raw            <- Raw files.
     │
+    │── docs               <- Docs directory
+    │
+    │── models             <- Model directory
+    │
+    │── outputs            <- Output directory
+    │
     ├── .MISTIC-public.yml  <- The requirements file for reproducing the analysis environment
-    
+    |
     ├── MISTIC.py          <- The main program of this project
     │
     ├── src                <- Source code for use in this project.
+        │── annotation     <- annotation files
+        │   └── conf.toml
+        │   └── vep.ini
+        │
         ├── data           <- Scripts to download or generate data
+        │   └── filter_1000G.py
+        │   └── handle_config.py
         │   └── make_dataset.py
+        │   └── merge_and_score_1000G.py
         │   └── vcf_to_pandas.py
         |
         │── evaluation     <- Scripts to build evaluation sets
-        │   └── combination_pandas.py
-        │
+        │   └── combination_pandas.py        |
         ├── features       <- Scripts to turn raw data into features for modeling
         │   └── AAIndex.py
         │   └── select_columns_pandas.py
@@ -165,6 +177,7 @@ To perform
         └── visualization  <- Scripts to create exploratory and results oriented visualizations
             └── histo_weights.py
             └── maf_plot.py
+            └── stats_1000G.py
             └── visualization.py
 
 
