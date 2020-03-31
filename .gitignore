@@ -92,6 +92,7 @@ target/
 *.csv.gz
 *.vcf.gz
 *.tsv.gz
+*.pkl
 !data/examples/pandas_mini_eval.csv.gz
 !data/examples/pandas_mini_training.csv.gz
 
@@ -102,4 +103,4 @@ Logging/
 # Outputs
 outputs/EVALUATION_SETS_OUTPUT_EXAMPLE/
 outputs/OUTPUT_EXAMPLE/
-/models/*.pkl
+!/models
