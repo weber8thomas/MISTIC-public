@@ -95,8 +95,6 @@ target/
 !data/examples/pandas_mini_eval.csv.gz
 !data/examples/pandas_mini_training.csv.gz
 
-# Models
-models
 
 # Logging
 Logging/
@@ -104,6 +102,4 @@ Logging/
 # Outputs
 outputs/EVALUATION_SETS_OUTPUT_EXAMPLE/
 outputs/OUTPUT_EXAMPLE/
-/models/
-/models/MISTIC_LR.pkl
-/models/MISTIC_VC.pkl
+/models/*.pkl
