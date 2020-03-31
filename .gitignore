@@ -104,3 +104,6 @@ Logging/
 # Outputs
 outputs/EVALUATION_SETS_OUTPUT_EXAMPLE/
 outputs/OUTPUT_EXAMPLE/
+/models/
+/models/MISTIC_LR.pkl
+/models/MISTIC_VC.pkl
