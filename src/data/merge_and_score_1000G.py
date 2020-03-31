@@ -39,6 +39,17 @@ l_df_1000G = m.list()
 
 
 def mp_process_df(file, model, deleterious_df, output_dir):
+	"""
+
+	Args:
+		file:
+		model:
+		deleterious_df:
+		output_dir:
+
+	Returns:
+
+	"""
 	params = dict(list_columns=list_columns,
 	              flag=flag,
 	              input=file,

@@ -187,11 +187,11 @@ To perform
 
 ### Note (Windows Users)
 
-If you are running under windows, `cyvcf2` can't be installed. Scripts which process VCF files (`vcf_to_pandas.py`, `compare_vcf.py`, ...) could not be used.
+If you are running under windows, `cyvcf2` can't be installed. Scripts which process VCF files (`vcf_to_pandas.py`, `filter_1000G.py`, `make_dataset.py`, ...) could not be used.
 Fortunately, you can still use `MISTIC` be installing the required packages with the following command : 
 
 ```
-conda create -c conda-forge -n MISTIC-public matplotlib==2.2.3 numpy pandas==0.23.4 scikit-learn==0.20.2 seaborn==0.9.0 tqdm
+conda create -c conda-forge -n MISTIC-public matplotlib==2.2.3 numpy pandas==0.23.4 scikit-learn==0.20.2 seaborn==0.9.0 tqdm parmap
 ```                            
 
 ## Contact

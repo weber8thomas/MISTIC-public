@@ -8,6 +8,14 @@ from src.features.select_columns_pandas import select_columns_pandas
 
 
 def equal(tmp):
+	"""
+
+	Args:
+		tmp:
+
+	Returns:
+
+	"""
 	complete_data_path = tmp.loc[tmp['True_Label'] == 1]
 	complete_data_path = complete_data_path.sample(frac=1)
 	complete_data_begn = tmp.loc[tmp['True_Label'] == -1]
@@ -33,6 +41,16 @@ def equal(tmp):
 
 
 def merging(df1, df2, logger):
+	"""
+
+	Args:
+		df1:
+		df2:
+		logger:
+
+	Returns:
+
+	"""
 	final_df = pd.concat([df1, df2], axis=0)
 	col_ordered = ['ID', 'True_Label'] + list(sorted(set(list(final_df.columns)) - {'ID', 'True_Label'}))
 
@@ -72,6 +90,21 @@ def merging(df1, df2, logger):
 
 
 def combine_core(d, combi, CV, combi_name, l_columns, output_dir, maf_list_process, logger):
+	"""
+
+	Args:
+		d:
+		combi:
+		CV:
+		combi_name:
+		l_columns:
+		output_dir:
+		maf_list_process:
+		logger:
+
+	Returns:
+
+	"""
 	combine_df = merging(d[combi[0]], d[combi[1]], logger)
 	combine_df.drop('Source_flag', axis=1, inplace=True)
 	combine_df.dropna(inplace=True)
@@ -111,6 +144,20 @@ def combine_core(d, combi, CV, combi_name, l_columns, output_dir, maf_list_proce
 		output_df.to_csv(output_dir + new_name, compression='gzip', sep='\t', index=False)
 
 def combination_pandas(full_eval_set, training_set, output_dir, logger, l_columns, flag, CV=10):
+	"""
+
+	Args:
+		full_eval_set:
+		training_set:
+		output_dir:
+		logger:
+		l_columns:
+		flag:
+		CV:
+
+	Returns:
+
+	"""
 	output_dir += '/'
 	full_df = pd.read_csv(filepath_or_buffer=full_eval_set, sep='\t', compression='gzip', encoding='utf-8',
 	                      low_memory=False)

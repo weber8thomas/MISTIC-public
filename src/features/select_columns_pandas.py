@@ -10,6 +10,14 @@ aa = AAIndex()
 # pandarallel.initialize(progress_bar=True, nb_workers=30)
 
 def new_columns_matrix(array):
+	"""
+
+	Args:
+		array:
+
+	Returns:
+
+	"""
 	list_matrix = list()
 	for x in array:
 		if '/' in x:
@@ -26,6 +34,15 @@ def new_columns_matrix(array):
 	return list_matrix
 
 def process_column(row, col):
+	"""
+
+	Args:
+		row:
+		col:
+
+	Returns:
+
+	"""
 	processed_row = row
 	if processed_row == '-':
 		processed_row = np.nan
@@ -45,7 +62,21 @@ def process_column(row, col):
 
 # TODO : WORK on select columns speed, too slow due to GC or other things
 
-def select_columns_pandas(df, list_columns, flag,  progress_bar=True, HS=False, fill=False, dropna=True):
+def select_columns_pandas(df, list_columns, flag,  progress_bar=True, fill=False, dropna=True):
+	"""
+
+	Args:
+		df:
+		list_columns:
+		flag:
+		progress_bar:
+		HS:
+		fill:
+		dropna:
+
+	Returns:
+
+	"""
 
 
 	# def select_columns_pandas(df, list_columns, flag):
@@ -243,8 +274,6 @@ def select_columns_pandas(df, list_columns, flag,  progress_bar=True, HS=False, 
 
 
 		col_name_pred = col + '_pred'
-		if HS is True:
-			thresholds_sup = thresholds_sup_HS
 		if col in thresholds_sup:
 			df[col] = pd.to_numeric(df[col].dropna())
 			df[col_name_pred] = np.where(df[col] > thresholds_sup[col], 1, -1)

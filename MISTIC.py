@@ -145,8 +145,7 @@ def training_and_testing(ARGS):
 		eval_begn.dropna(inplace=True)
 
 		complete_training = pd.concat([train_path, train_begn]).drop_duplicates(keep='first')
-		complete_training = complete_training[
-			complete_training.columns.drop(list(complete_training.filter(regex='pred|flag')))]
+		complete_training = complete_training[complete_training.columns.drop(list(complete_training.filter(regex='pred|flag')))]
 		complete_training.dropna(inplace=True)
 
 		# Some stats on Pathogenic and Benign variant numbers in both training and testing dataframes
