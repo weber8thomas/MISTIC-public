@@ -57,10 +57,21 @@ def mp_process_df(file, model, deleterious_df, output_dir):
 
 
 if __name__ == '__main__':
+	current_path = os.path.dirname(os.path.realpath(__file__)).split('/')
+	current_path_project = list()
+	for dir in current_path:
+		if dir != 'MISTIC-public':
+			current_path_project.append(dir)
+		else:
+			break
+	current_path_project.append('MISTIC-public')
+	current_path_project = "/".join(current_path_project)
+
 	directory = sys.argv[1]
-	model_dir = sys.argv[2]
-	deleterious_df_path = sys.argv[3]
-	output_dir = sys.argv[4]
+	output_dir = sys.argv[2]
+
+	model_dir = current_path_project + "/models"
+	deleterious_df_path = current_path_project + "/data/processed/pandas_path_mistic_test.csv.gz"
 
 	deleterious_df = prediction(dict(list_columns=list_columns[1:],
 	                            flag=flag,

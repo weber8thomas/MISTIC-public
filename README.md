@@ -18,10 +18,13 @@ Make sure `conda` is in your shell `$PATH` before :
 
 To download GRCh37 files:
 - ClinVar VCF (20180930 release)
-- gnomAD VCF (2.1.1 release)
 - training sets data used in MISTIC (TSV file)
+- gnomAD VCF (2.1.1 release)
 
-`make dl_data`
+`make dl_data_clinvar_and_training_sets`
+
+> :warning: As gnomAD file is massive, if you already have the raw 2.1.1 file, you can make a symbolic link between your file and the directory data/raw/population. If not, you can use `make dl_data_gnomad` 
+
 
 #### Prepare data
 
@@ -45,12 +48,14 @@ When everything is in place, you can then use :
 
 #### Annotation configuration for VEP & vcfanno
 
-/gstock/biolo_datasets/variation/benchmark/Annot_datasets/dbNSFP/v4.0/dbNSFP_final_hg19.gz
-https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz
+Annotation files from CADD and dbNSFP can be found below : 
 
+- location : `ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/Annot_datasets/dbNSFP/v4.0/dbNSFP_final_hg19.gz`
+- https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz
+
+> :note: dbNSFP was converted to hg19 format and trimmed of some unused columns at the end of the file
 
 To annotate VCF files with both VEP & vcfanno, you can find configuration files used in the development of MISTIC here : `src/annotation`
-
 
 
 
@@ -101,7 +106,9 @@ To perform
 - bcftools
 - bgzip + tabix
 
-1. Download data - make `dl_1000G_exomes`
+> :note: 1000 genomes indivudal separated exomes can be download from our server  
+
+1. Download data - location : `ssh.lbgi.fr:/gstock/biolo_datasets/variation/public_genomes/1000G/phase1/individual_vcfs/full/*`
 
 2. Filter MAF - `for file in *.vcf.gz; bcftools view -i 'INFO/AF < 0.01' "$file".vcf.gz | bgzip > "${file%%.*}"_bcftools.vcf.gz`
 
@@ -111,11 +118,11 @@ To perform
 
 5. Annotate vcfanno - `for file in *_missense.vcf.gz; vcfanno -p core_nb conf.toml $file.vcf.gz | bgzip > "${file%%.*}"vcfanno.vcf.gz`
 
-6. Convert to pandas - `for file in *_vcfanno.vcf.gz; vcf_to_pandas.py` (see above)
+6. Convert to pandas - `for file in *_vcfanno.vcf.gz; vcf_to_pandas.py $ARGS` (see above)
 
-7. Merge pandas & score with MISTIC - `merge_&_score_1000G.py` 
+7. Merge pandas & score with MISTIC - `python merge_and_score_1000G.py $input_dir_1000G $output_dir` 
 
-8. Build synthetic exomes & compute stats on the fly - `combination_1000G.py `
+8. Compute stats & produce plots - `stats_1000G.py $1000G_processed_dir`
  
 
 ## Project Organization
@@ -130,7 +137,7 @@ To perform
     │   ├── processed      <- Final VCF data after filtering.
     │   └── raw            <- Raw files.
     │
-    ├── MISTIC-public.yml  <- The requirements file for reproducing the analysis environment
+    ├── .MISTIC-public.yml  <- The requirements file for reproducing the analysis environment
     
     ├── MISTIC.py          <- The main program of this project
     │

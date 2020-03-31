@@ -26,27 +26,22 @@ endif
 create_environment:
 ifeq (True,$(HAS_CONDA))
 	@echo ">>> Detected conda, creating conda environment."
-	conda env create --name $(PROJECT_NAME) --file=MISTIC-public.yml
+	conda env create --name $(PROJECT_NAME) --file=.MISTIC-public.yml
 	conda activate MISTIC-public
 
 endif
 	@echo ">>> New conda env created. Activate with:\nconda activate $(PROJECT_NAME)"
 
-
-
-## Download RAW Data
-dl_data:
+dl_data_clinvar_and_training_sets:
 ifeq (default,$(PROFILE))
 	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/Databases/clinvar/clinvar_20180930_annot.vcf.gz data/raw/deleterious
-	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/gnomAD/latest/vcf/exomes/gnomad.exomes.r2.1.1.sites.vcf.bgz data/raw/population
 	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/MISTIC/TRAINING_SETS/* data/raw/training_sets
+
 endif
 
-dl_1000G_exomes:
+dl_data_gnomad:
 ifeq (default,$(PROFILE))
-	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/Databases/clinvar/clinvar_20180930_annot.vcf.gz data/raw/deleterious
 	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/gnomAD/latest/vcf/exomes/gnomad.exomes.r2.1.1.sites.vcf.bgz data/raw/population
-	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/MISTIC/TRAINING_SETS/* data/raw/training_sets
 endif
 
 dl_mistic_pickle_models:
@@ -54,6 +49,10 @@ ifeq (default,$(PROFILE))
 	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/MISTIC/WEBSITE_DATA/MODELS/* models
 endif
 
+dl_mistic_test:
+ifeq (default,$(PROFILE))
+	rsync -auP ssh.lbgi.fr:/gstock/biolo_datasets/variation/benchmark/MISTIC/WEBSITE_DATA/pandas_path_mistic_test.csv.gz data/processed
+endif
 
 ## Prepare RAW data by applying filters
 prepare_data: requirements

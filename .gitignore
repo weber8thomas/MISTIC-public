@@ -95,6 +95,9 @@ target/
 !data/examples/pandas_mini_eval.csv.gz
 !data/examples/pandas_mini_training.csv.gz
 
+# Models
+models
+
 # Logging
 Logging/
 
