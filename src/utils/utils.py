@@ -7,7 +7,6 @@ import pandas as pd
 import csv
 import gzip
 import mimetypes
-from pandas import DataFrame
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 import numpy as np
@@ -95,29 +94,6 @@ def write_to_html_file(df, title='', filename='out.html'):
 		f.write(result)
 
 
-# def filling_blank_cells(data_inp, strategy):
-#     """
-#     Method to fill blank cells into a Pandas Dataframe
-
-#     Args:
-#         data_inp: Pandas Dataframe
-#             Dataframe without ids, only numeric data
-#         strategy: str
-#             Determine the strategy to fill blank cells
-#             "mean", "median", "most_frequent" or "constant", check :
-#             http://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html
-
-#     Returns:
-#         Dataframe without blank cells
-
-#     """
-#     imp = SimpleImputer(missing_values=np.nan, strategy=strategy)
-#     data_out = imp.fit(data_inp)
-#     data_out = data_out.transform(data_inp)
-#     pd_data = pd.DataFrame(data_out)
-#     return pd_data
-
-
 def merge_dataframe(data1, data2):
 	"""
 	Method to merge two dataframe
@@ -174,7 +150,16 @@ def prepare_input_data(input_data,
                        pred=False
                        ):
 	"""
-	TEST
+
+	Args:
+		input_data:
+		fill_blanks:
+		strategy:
+		standardize:
+		pred:
+
+	Returns:
+
 	"""
 	data = get_data(input_data=input_data)
 	# print(data)

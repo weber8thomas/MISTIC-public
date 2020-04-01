@@ -8,10 +8,7 @@ Contents :
 .. toctree::
    :maxdepth: 1
 
-   features
-   models
    utils
-   visualization
 
 
 Indices and tables
