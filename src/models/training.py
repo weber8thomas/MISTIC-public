@@ -63,8 +63,6 @@ class TrainingClassification(object):
 		print('\n')
 
 		df = utils.prepare_input_data(input_data=input_data,
-		                              output_dir=output,
-		                              logger=self.logger,
 		                              standardize=standardize,
 		                              )
 

@@ -37,8 +37,6 @@ class TestingClassification(object):
 		self.logger.info('=' * 100)
 		self.logger.info('\n')
 		df = utils.prepare_input_data(input_data=input_data,
-		                              output_dir=output_dir,
-		                              logger=self.logger,
 		                              standardize=standardize,
 		                              )
 		df = df.reset_index(drop=True)
@@ -146,4 +144,4 @@ class TestingClassification(object):
 		visualization.print_stdout(self.logger, log, output_dir, predicted_labels, labels, data)
 		self.logger.info('Saving plots and results...')
 		visualization.plot_roc_curve_testing(labels, results_proba, output_dir, predicted_labels, data, ylim=-0.05)
-		visualization.plot_roc_curve_testing(labels, results_proba, output_dir, predicted_labels, data, ylim=0.95)
+		# visualization.plot_roc_curve_testing(labels, results_proba, output_dir, predicted_labels, data, ylim=0.95)

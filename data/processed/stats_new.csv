@@ -1,0 +1,6 @@
+	ClinVar	HGMD	gnomad
+Total_SNV	9035.0	8084.0	3882.0
+Missense	4268.0	5732.0	1303.0
+Pathogenic	981.0	4178.0	
+High_confidence	354.0		1301.0
+Circularity_filtering	146.0	474.0	1299.0

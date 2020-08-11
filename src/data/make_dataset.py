@@ -259,9 +259,13 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 
+	# HANDLE HGMD INPUTS
+	hgmd_file = sys.argv[1]
+	hgmd_vep_field = sys.argv[2]
+	hgmd_vep_separator = sys.argv[3]
+
+
 	clinvar_file = "data/raw/deleterious/clinvar_20180930_annot.vcf.gz"
-	# TODO : HANDLE HGMD
-	hgmd_file = "data/raw/deleterious/HGMD_PRO_2018.1_hg19_annot.vcf.gz"
 	gnomad_file = "data/raw/population/gnomad.exomes.r2.1.1.sites.vcf.bgz"
 
 	deleterious_files = "data/raw/deleterious"
@@ -292,8 +296,9 @@ if __name__ == '__main__':
 	vcf_clinvar, index_dict_clinvar = parse_header_vcf(clinvar_file, 'CSQ', '|')
 	arr1 = [vcf_clinvar, index_dict_clinvar, 'CSQ', '|', output_clinvar, clinvar_intersection]
 
-	vcf_hgmd, index_dict_hgmd = parse_header_vcf(hgmd_file, 'CSQ', '|')
-	arr2 = [vcf_hgmd, index_dict_hgmd, 'CSQ', '|', output_hgmd, hgmd_intersection]
+	# IF VEP ANNOTATION WITH DIFFERENT NAME AND SEPARATOR, CHANGE THEM HERE
+	vcf_hgmd, index_dict_hgmd = parse_header_vcf(hgmd_file, hgmd_vep_field, hgmd_vep_separator)
+	arr2 = [vcf_hgmd, index_dict_hgmd, hgmd_vep_field, hgmd_vep_separator, output_hgmd, hgmd_intersection]
 
 	with ThreadPoolExecutor(2) as executor:
 		future_1 = executor.submit(lambda p: prepare_clinvar(*p), arr1)

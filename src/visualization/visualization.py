@@ -6,7 +6,6 @@ from sklearn import metrics
 from src.utils import utils
 from src.models import ML
 
-
 matplotlib.use('Agg', warn=False)
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
@@ -23,6 +22,7 @@ convert_dict = {
 	"DEOGEN2_score_pred": "DEOGEN2_flag",
 	"PrimateAI_score_pred": "PrimateAI_flag",
 	# "DEOGEN2_score_pred" : "DEOGEN2_score",
+	"InMeRF_flag_pred": "InMeRF_flag",
 	"fathmm-XF_coding_score_pred": "fathmm-XF_coding_flag",
 	"Eigen-raw_coding_pred": "Eigen-raw_coding_flag",
 	"M-CAP_score_pred": "M-CAP_flag",
@@ -57,6 +57,7 @@ legend_dict = {
 	'fathmm-XF': 'fathmm-XF',
 	'DEOGEN2': 'DEOGEN2',
 	'PrimateAI': 'PrimateAI',
+	'InMeRF': 'InMeRF',
 	'Eigen-raw': 'Eigen-raw',
 	'REVEL': 'REVEL',
 	'M-CAP': 'M-CAP',
@@ -87,9 +88,10 @@ color_dict = {
 	'PrimateAI': '#22a6b3',
 	'Eigen-raw': '#0c2461',
 	'MISTIC': '#f44336',
+	'InMeRF': '#0c2461',
 	'VotingClassifier': '#f44336',
 	'LogisticRegression': '#e57373',
-	'RandomForestClassifier': '#2196F3',
+	'RandomForestClassifier': '#f44336',
 	'GradientBoostingClassifier': '#9b59b6',
 	'GaussianNB': '#22a6b3',
 	'MLPClassifier': '#0c2461',
@@ -155,7 +157,7 @@ def plot_roc_curve_training(dict_y_test, results_proba, output_dir):
 		ordered_dict[algo]['mean_fpr'] = mean_fpr
 		ordered_dict[algo]['std_auc'] = std_auc
 		ordered_dict[algo]['std_tpr'] = std_tpr
-		ordered_dict[algo]['tprs_upper'] = tprs_upper
+#f44336		ordered_dict[algo]['tprs_upper'] = tprs_upper
 		ordered_dict[algo]['tprs_lower'] = tprs_lower
 
 		plt.fill_between(mean_fpr, tprs_lower, tprs_upper, color='grey', alpha=.2,
@@ -206,17 +208,6 @@ def plot_roc_curve_testing(y_test, results_proba, output_dir, predicted_labels, 
 	"""
     Method for plot ROC comparison between algorithms
 
-    Args:
-        ylim:
-        data:
-        predicted_labels:
-        y_test:
-        results_proba : dict
-            Store the proba obtained for each iteration of CV for every algorithm used
-        output_dir: str
-            Directory where will be save the plots
-    Returns:
-        None
     """
 	# output_dir = output_dir + '/Plots/ROC_plots'
 	dict_auc = dict()
@@ -244,8 +235,8 @@ def plot_roc_curve_testing(y_test, results_proba, output_dir, predicted_labels, 
 
 	from matplotlib.lines import Line2D
 
-	check = ['CADD', 'M-CAP', 'REVEL', 'ClinPred', 'Condel', 'VEST4', 'MetaLR', 'MetaSVM', 'SIFTval', 'PolyPhenVal',
-	         'fathmm-XF', 'DEOGEN2', 'Eigen-raw', 'PrimateAI']
+	# check = ['CADD', 'M-CAP', 'REVEL', 'ClinPred', 'Condel', 'VEST4', 'MetaLR', 'MetaSVM', 'SIFTval', 'PolyPhenVal', 'fathmm-XF', 'DEOGEN2', 'Eigen-raw', 'PrimateAI']
+	check = ['REVEL', 'ClinPred', 'InMeRF', 'RandomForestClassifier']
 
 	for prediction in predicted_labels.columns:
 		if 'pred' in prediction:
@@ -271,7 +262,7 @@ def plot_roc_curve_testing(y_test, results_proba, output_dir, predicted_labels, 
 		algo = elem[0]
 		if algo in check:
 			plt.plot(ordered_dict[algo]['fpr'], ordered_dict[algo]['tpr'], color=color_dict[legend_dict[algo]], lw=2)
-		if algo == 'VotingClassifier':
+		if algo == 'RandomForestClassifier':
 			plt.plot(ordered_dict[algo]['fpr'], ordered_dict[algo]['tpr'], color=color_dict[legend_dict[algo]], lw=4)
 		plt.xlim([-0.05, 1.05])
 		if ylim == 0.95:
@@ -282,23 +273,25 @@ def plot_roc_curve_testing(y_test, results_proba, output_dir, predicted_labels, 
 		plt.ylabel('True Positive Rate')
 
 	custom_lines = [
-		Line2D([0], [0], color=color_dict['VotingClassifier'], lw=4),
-		Line2D([0], [0], color=color_dict['M-CAP'], lw=2),
+		Line2D([0], [0], color=color_dict['RandomForestClassifier'], lw=4),
+		# Line2D([0], [0], color=color_dict['M-CAP'], lw=2),
 		Line2D([0], [0], color=color_dict['REVEL'], lw=2),
 		Line2D([0], [0], color=color_dict['ClinPred'], lw=2),
-		Line2D([0], [0], color=color_dict['Eigen-raw'], lw=2),
-		Line2D([0], [0], color=color_dict['fathmm-XF'], lw=2),
-		Line2D([0], [0], color=color_dict['PrimateAI'], lw=2),
+		Line2D([0], [0], color=color_dict['InMeRF'], lw=2),
+		# Line2D([0], [0], color=color_dict['Eigen-raw'], lw=2),
+		# Line2D([0], [0], color=color_dict['fathmm-XF'], lw=2),
+		# Line2D([0], [0], color=color_dict['PrimateAI'], lw=2),
 		# Line2D([0], [0], color=color_dict['Integrated'], lw=2),
 	]
 	plt.legend(custom_lines, [
-		'MISTIC (' + str(round(dict_auc['VotingClassifier'], 3)) + ')',
-		'M-CAP (' + str(round(dict_auc['M-CAP'], 3)) + ')',
+		'MISTIC (' + str(round(dict_auc['RandomForestClassifier'], 3)) + ')',
+		# 'M-CAP (' + str(round(dict_auc['M-CAP'], 3)) + ')',
 		'REVEL (' + str(round(dict_auc['REVEL'], 3)) + ')',
 		'ClinPred (' + str(round(dict_auc['ClinPred'], 3)) + ')',
-		'Eigen (' + str(round(dict_auc['Eigen-raw'], 3)) + ')',
-		'FATHMM-XF (' + str(round(dict_auc['fathmm-XF'], 3)) + ')',
-		'PrimateAI (' + str(round(dict_auc['PrimateAI'], 3)) + ')',
+		'InMeRF (' + str(round(dict_auc['InMeRF'], 3)) + ')',
+		# 'Eigen (' + str(round(dict_auc['Eigen-raw'], 3)) + ')',
+		# 'FATHMM-XF (' + str(round(dict_auc['fathmm-XF'], 3)) + ')',
+		# 'PrimateAI (' + str(round(dict_auc['PrimateAI'], 3)) + ')',
 		# "MISTIC's features",
 	]
 	           )
@@ -317,20 +310,6 @@ def plot_roc_curve_testing(y_test, results_proba, output_dir, predicted_labels, 
 def print_stdout(logger, log, output_dir, predicted_labels=None, labels=None, data=None):
 	"""
     Print to standard output and save results table to csv and html table
-
-    Args:
-        logger:
-        predicted_labels:
-        labels:
-        data:
-        log: Pandas Dataframe
-            Dataframe with the metrics (ROC-AUC, PR-AUC, Accuracy ...)
-            linked to each scenario
-        output_dir: str
-            Name of the output directory
-
-    Returns:
-        None
 
     """
 
@@ -372,75 +351,3 @@ def print_stdout(logger, log, output_dir, predicted_labels=None, labels=None, da
 		logger.info('=' * 100)
 		logger.info('=' * 100)
 		logger.info('\n' * 3)
-
-
-
-def histo_radmel(df, output):
-	sns.set(style="white")
-	sns.set_context("paper")
-	matplotlib.rcParams['interactive'] == True
-	fig, ax = plt.subplots(figsize=(8, 6))
-	# df = pd.read_csv(file, sep='\t')
-	# df.replace({'VotingClassifier': 'MISTIC'}, inplace=True)
-	if 'SPECIFIC' in output:
-		print('SPECIFIC')
-		df.replace({'VotingClassifier': 'VC', 'LogisticRegression': 'MISTIC', 'RandomForestClassifier': 'RF'},
-		           inplace=True)
-	else:
-		df.replace({'VotingClassifier': 'MISTIC', 'LogisticRegression': 'LR', 'RandomForestClassifier': 'RF'},
-		           inplace=True)
-	competitors = ['', 'PrimateAI', 'Eigen', 'FATHMM-XF', 'ClinPred', 'M-CAP', 'REVEL', 'MISTIC']
-	# competitors = ['M-CAP', 'REVEL', 'ClinPred', 'RF', 'LR', 'MISTIC']
-	df = df[df['Classifier'].isin(competitors)]
-	df.set_index('Classifier', inplace=True)
-	df = df.reindex(competitors)
-	df = df.reset_index()
-	# df.Classifier = df.Classifier.str.replace('MISTIC', 'hsMISTIC')
-	df = df[['Classifier', 'AUC Score', 'F1 Score', 'Log Loss']]
-
-	# df = df[['Classifier', 'Specificity', 'F1 Score', 'Log Loss']]
-	# CLINPRED M-CAP REVEL MISTIC
-	colors = ["#22a6b3", "#0c2461", "#9b59b6", "#2196F3", "#FF9800", "#4CAF50", "#f44336"]
-	# colors = ["#2196F3", "#FF9800", "#4CAF50", "#e57373", "#e57373" ,"#f44336"]
-
-	ax.yaxis.grid()
-
-	# df.plot(kind='bar', x='Classifier', y=['AUC Score', 'F1 Score', 'Log Loss'], secondary_y='Log Loss')
-	g1 = df.plot.line(marker='x', linestyle='-', x='Classifier', y='AUC Score', ylim=(0, 1.1), color='r', ax=ax,
-	                  label='ROC AUC ', lw=3, markersize=10, fontsize=10)
-	g2 = df.plot.line(marker='o', linestyle='-', x='Classifier', y='F1 Score', ylim=(0, 1.1), color='b', ax=ax,
-	                  label='F1 Score', lw=3, markersize=10, fontsize=10)
-	g3 = df.plot.line(marker='s', linestyle='--', x='Classifier', y='Log Loss', secondary_y=True, color='g', ax=ax,
-	                  label='Log Loss', lw=3, markersize=10, fontsize=10)
-	ticks = [item.get_text() for item in ax.get_xticklabels()]
-	# g2 = df.plot.line(marker='o', linestyle='-', x='Classifier', y='F1 Score', color='#757575', ax=ax, label='F1 Score', lw=3, markersize=10, fontsize=10)
-	lines, labels = g1.get_legend_handles_labels()
-	# del lines[-1]
-	# del labels[-1]
-	lines2, labels2 = g2.get_legend_handles_labels()
-	lines3, labels3 = g3.get_legend_handles_labels()
-	g1.set_ylim(0.5, 1.1)
-	g2.set_ylabel('ROC AUC   &   F1 Score', fontsize=10, )
-	g3.set_ylabel('Log Loss', fontsize=10)
-	ax.set_xlabel('')
-	ax.set_xticklabels(competitors)
-	title_name = output.split('/')[0]
-	df_name = "_".join(title_name.split('_')[:-1])
-	maf = title_name.split('_')[-1]
-	if maf == "0":
-		ax.set_title('{}'.format(title_name), y=1.0, fontsize=14)
-	else:
-		ax.set_title('{}'.format(title_name), y=1.0, fontsize=14)
-
-	# red_patch = mpatches.Patch(color='#757575', label='Foo')
-	# lines[1] = red_patch
-	# ax.legend(lines + lines3, labels + labels3, frameon=False, loc='upper right', ncol=3, bbox_to_anchor=(0.5, 1.0), fontsize=10)
-	ax.legend(lines + lines3, labels + labels3, frameon=False, loc='upper center', ncol=3,
-	          bbox_to_anchor=(0.5, 1.0), fontsize=10)
-	ax.yaxis.grid()
-	# ax.tick_params(axis='x', which='major', labelsize=12)
-	plt.tight_layout()
-	plt.savefig(output + '/histo_auc_f1_ll.png', dpi=600)
-	plt.close()
-
-

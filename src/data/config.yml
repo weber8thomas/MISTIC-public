@@ -1,0 +1,12 @@
+clinvar:
+  clinvar_file: data/deleterious/clinvar_20180930_annot.vcf.gz
+  clinvar_vep_field: CSQ
+  clinvar_vep_separator: '|'
+gnomad:
+  gnomad_file: data/poopulation/gnomad.exomes.r2.1.1.sites.vcf.bgz
+  gnomad_vep_field: CSQ
+  gnomad_vep_separator: '|'
+hgmd:
+  hgmd_file: C
+  hgmd_vep_field: B
+  hgmd_vep_separator: D
