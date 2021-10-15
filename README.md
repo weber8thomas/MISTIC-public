@@ -10,6 +10,8 @@ MISTIC-public
 
 In this repository, you will find all the developped scripts and tools used to build the MISTIC missense prediction model.
 
+Other informations can be found on our website : http://lbgi.fr/mistic/
+
 ## Usage
 
 ### Quickstart
