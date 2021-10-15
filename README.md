@@ -1,3 +1,9 @@
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/weber8thomas/MISTIC-public/blob/master/LICENSE)
+[![Website shields.io](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](http://lbgi.fr/mistic/)
+[![GitHub latest commit](https://badgen.net/github/last-commit/Naereen/Strapdown.js)](https://github.com/weber8thomas/MISTIC-public/commit/)
+
+
 MISTIC-public
 ==============================
 
@@ -201,3 +207,9 @@ Feel free to post issues if you have troubles
 
 --------------------
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+
+## How to cite ? 
+
+Chennen K, Weber T, Lornage X, Kress A, Böhm J, Thompson J, Laporte J, Poch O. MISTIC: A prediction tool to reveal disease-relevant deleterious missense variants. 2020 Jul 31;15(7):e0236962. doi: https://doi.org/10.1371/journal.pone.0236962. eCollection 2020.
+
